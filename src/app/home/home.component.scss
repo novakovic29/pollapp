@@ -47,12 +47,15 @@
 .hero-sub { max-width: 40rem; color: #d9cfd9 }
 .btn-new { margin-top: 1rem; padding: 0.6rem 1.2rem; background: var(--accent); border: none; color: #222; border-radius: 6px }
 
+.hero-art {
+  padding-right: 16rem;
+}
 .hero-art-image { max-width: 420px; height: auto; position: relative }
 .hero-art-image img { display: block; width: 100%; height: auto; border-radius: 8px; transition: opacity 350ms ease, transform 350ms ease }
 .hero-art-image .first { transform: scale(1); }
-.hero-art-image .hover-last { position: absolute; inset: 0; top: 0; left: 0; opacity: 0; z-index: 1; transform: scale(0.98); }
+.hero-art-image .hover-last { position: absolute; inset: 16px; opacity: 0; z-index: 1; transform: scale(0.96); border-radius: 8px; }
 .hero-art-image:hover .hover-last { opacity: 1; transform: scale(1); }
-.hero-art-image:hover .first { opacity: 0; transform: scale(0.98); }
+.hero-art-image:hover .first { opacity: 0; transform: scale(0.94); }
 
 .surveys { padding: 2rem }
 .section-title { font-family: 'Nerko One', cursive; color: rgba(255, 183, 112, 1); text-align: center; font-size: 2.4rem }
