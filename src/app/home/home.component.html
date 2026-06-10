@@ -1,0 +1,35 @@
+<div class="home-hero">
+  <img src="/assets/images/logo.svg" alt="logo" class="top-logo">
+
+  <div class="hero-content">
+    <h1 class="hero-title">Collect Feedback, Unlock Ideas</h1>
+    <p class="hero-sub">Create and share surveys in minutes – from team events to workplace culture. Collect opinions, engage your audience, and turn feedback into action.</p>
+    <button class="btn-new">New survey</button>
+  </div>
+
+  <div class="hero-art">
+    <div class="hero-art-image">
+      <img src="/assets/images/logo_first.svg" alt="art" class="first">
+      <img src="/assets/images/logo_hover_last.svg" alt="art hover last" class="hover-last">
+    </div>
+  </div>
+</div>
+
+<section class="surveys">
+  <h2 class="section-title">Your surveys</h2>
+
+  <div class="card-row">
+    <a class="big-card" *ngFor="let s of surveys" [routerLink]="['/survey', s.id]">
+      <div class="card-category">{{ s.category }}</div>
+      <h3 class="card-title">{{ s.title }}</h3>
+      <div class="card-footer">{{ s.endsIn }}</div>
+    </a>
+  </div>
+
+  <div class="list-row">
+    <div class="list-item" *ngFor="let s of surveys">
+      <a [routerLink]="['/survey', s.id]">{{ s.title }}</a>
+      <span class="ends">{{ s.endsIn }}</span>
+    </div>
+  </div>
+</section>

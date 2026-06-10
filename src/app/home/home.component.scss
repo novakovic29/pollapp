@@ -1,0 +1,66 @@
+@import '../../styles.scss';
+
+:root {
+  --bg: #2f2230;
+  --accent: #ffb86b;
+  --muted: #e6dfe6;
+  --card: #3a2b36;
+}
+
+.home-hero {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  padding: 3rem 2rem;
+  background: var(--bg);
+  color: var(--muted);
+}
+
+.home-hero { position: relative }
+
+.top-logo {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 56px;
+  height: auto;
+}
+
+.hero-content {
+  flex: 1 1 50%;
+}
+.hero-title {
+  font-family: 'Nerko One', cursive;
+  font-size: 3rem;
+  color: var(--accent);
+  margin: 0 0 1rem 0;
+}
+.hero-sub { max-width: 40rem; color: #d9cfd9 }
+.btn-new { margin-top: 1rem; padding: 0.6rem 1.2rem; background: var(--accent); border: none; color: #222; border-radius: 6px }
+
+.hero-art-image { max-width: 420px; height: auto; position: relative }
+.hero-art-image img { display: block; width: 100%; height: auto; border-radius: 8px; transition: opacity 350ms ease, transform 350ms ease }
+.hero-art-image .first { transform: scale(1); }
+.hero-art-image .hover-last { position: absolute; inset: 0; top: 0; left: 0; opacity: 0; z-index: 1; transform: scale(0.98); }
+.hero-art-image:hover .hover-last { opacity: 1; transform: scale(1); }
+.hero-art-image:hover .first { opacity: 0; transform: scale(0.98); }
+
+.surveys { padding: 2rem }
+.section-title { font-family: 'Nerko One', cursive; color: var(--accent); text-align: center; font-size: 2rem }
+
+.card-row { display:flex; gap:1rem; padding: 2rem 0 }
+.big-card { display:block; background: var(--card); color: var(--muted); padding:1.5rem; border-radius: 24px; text-decoration: none; flex:1; }
+.card-category { font-size: 0.8rem; opacity: 0.9 }
+.card-title { margin: 0.6rem 0; font-size: 1.1rem }
+.card-footer { font-size: 0.75rem; background:#ffefdb; color:#5a3a1a; display:inline-block; padding:0.2rem 0.4rem; border-radius:4px }
+
+.list-row { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; margin-top:1.5rem }
+.list-item { background:#352a30; padding:0.8rem 1rem; border-radius:12px; display:flex; justify-content:space-between; align-items:center }
+.list-item a { color:var(--muted); text-decoration:none }
+.ends { background:#ffefdb; color:#5a3a1a; padding:0.2rem 0.5rem; border-radius:6px; font-size:0.75rem }
+
+@media (max-width: 800px) {
+  .home-hero { flex-direction:column; text-align:center }
+  .card-row { flex-direction:column }
+  .list-row { grid-template-columns:1fr }
+}
