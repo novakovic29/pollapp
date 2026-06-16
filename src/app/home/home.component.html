@@ -31,14 +31,26 @@
     </a>
   </div>
 
-  <div class="list-row">
-    <a class="big-card-dark" *ngFor="let s of surveys" [routerLink]="['/survey', s.id]">
-      <div class="card-content">
-        <div class="card-category">{{ s.category }}</div>
-        <h3 class="card-title">{{ s.title }}</h3>
-        <p class="card-description">{{ s.description }}</p>
+  <div class="list-section">
+    <div class="list-toolbar">
+      <div class="toolbar-group toolbar-left">
+        <button class="toolbar-button">Active surveys</button>
+        <button class="toolbar-button">Past surveys</button>
       </div>
-      <div class="card-footer">{{ s.endsIn }}</div>
-    </a>
+      <div class="toolbar-group toolbar-right">
+        <button class="toolbar-button">Sort by categories</button>
+      </div>
+    </div>
+
+    <div class="list-row">
+      <a class="big-card-dark" *ngFor="let s of surveys" [routerLink]="['/survey', s.id]">
+        <div class="card-content">
+          <div class="card-category">{{ s.category }}</div>
+          <h3 class="card-title">{{ s.title }}</h3>
+          <p class="card-description">{{ s.description }}</p>
+        </div>
+        <div class="card-footer">{{ s.endsIn }}</div>
+      </a>
+    </div>
   </div>
 </section>

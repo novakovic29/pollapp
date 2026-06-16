@@ -145,7 +145,7 @@
 .big-card-dark {
   background: rgba(217, 217, 217, 0.08);
   color: #e6dfe6;
-  width: 513px;
+  width: min(460px, 100%);
   min-height: 127px;
   height: auto;
   border-radius: 1rem 3rem 1rem 1rem;
@@ -171,13 +171,62 @@
   color: #f8f1ff;
 }
 
-.list-row {
+.list-section {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: min(100%, 1046px);
+  margin: 0 auto;
+}
+.list-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+.toolbar-group {
+  display: flex;
+  gap: 0.75rem;
+}
+.toolbar-right {
+  margin-left: auto;
+}
+.toolbar-left {
+  margin-left: 0;
+}
+.toolbar-button {
+  padding: 0.8rem 1.2rem;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 207, 161, 0.18);
+  color: #2f2230;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 180ms ease, transform 180ms ease;
+}
+.toolbar-button:hover {
+  background: rgba(255, 207, 161, 0.32);
+  transform: translateY(-1px);
+}
+
+.list-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(320px, 1fr));
   justify-content: center;
-  align-items: flex-start;
   gap: 20px;
   padding: 2rem 0;
+}
+@media (max-width: 1080px) {
+  .list-row {
+    grid-template-columns: repeat(2, minmax(260px, 1fr));
+  }
+}
+@media (max-width: 800px) {
+  .list-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 .card-content {
