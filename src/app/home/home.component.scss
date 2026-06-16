@@ -102,7 +102,7 @@
   justify-content: center;
   align-items: flex-start;
   gap: 30px;
-  padding: 2rem 0;
+  padding: 2rem 0 4rem 0;
 }
 .big-card-light,
 .big-card-dark {
@@ -175,7 +175,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   gap: 20px;
   padding: 2rem 0;
 }
