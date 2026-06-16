@@ -1,56 +1,112 @@
-<div class="home-hero">
-  <img src="/assets/images/logo.svg" alt="logo" class="top-logo">
+<div class="page-wrapper">
+  <div class="page-inner">
 
-  <div class="hero-content">
-    <h1 class="hero-title">Collect Feedback,<br>Unlock Ideas</h1>
-    <p class="hero-sub">Create and share surveys in minutes – from team events to workplace culture. Collect opinions, engage your audience, and turn feedback into action.</p>
-    <button class="btn-new">New survey</button>
-  </div>
+    <header class="site-header">
+      <img src="/assets/images/logo.svg" alt="Logo" class="site-logo" />
+    </header>
 
-  <div class="hero-art">
-    <div class="hero-art-image">
-      <img src="/assets/images/logo_first.svg" alt="art" class="first">
-      <img src="/assets/images/logo_hover_last.svg" alt="art hover last" class="hover-last">
-    </div>
+    <main class="page-body">
+
+      <div class="hero-block">
+        <div class="hero-text">
+          <h1>Collect Feedback,<br />Unlock Ideas</h1>
+          <p>Create and share surveys in minutes – from team events to workplace culture. Collect opinions, engage your audience, and turn feedback into action.</p>
+          <button class="create-btn" [routerLink]="['/survey', 'new']">
+            <span>New survey</span>
+            <img src="/assets/images/add_circle.svg" alt="Add" class="btn-icon" />
+          </button>
+        </div>
+
+        <div class="hero-visual">
+          <img src="/assets/images/logo_first.svg" alt="Visual" class="visual-default" />
+          <img src="/assets/images/logo_hover_last.svg" alt="Visual hover" class="visual-hover" />
+        </div>
+      </div>
+
+      <div class="surveys-block">
+        <h2 class="surveys-main-title">Your surveys</h2>
+        <span class="soon-label">Ending soon</span>
+
+        <section class="soon-row">
+          <div class="soon-cards" *ngIf="soonEndingSurveys.length > 0; else noSoon">
+            <div class="soon-card" *ngFor="let s of soonEndingSurveys" [routerLink]="['/survey', s.id]">
+              <span class="item-category">{{ s.category }}</span>
+              <h3 class="item-name">{{ s.title }}</h3>
+              <button class="item-deadline">{{ s.endsIn }}</button>
+            </div>
+          </div>
+          <ng-template #noSoon>
+            <p class="empty-msg">No surveys ending soon</p>
+          </ng-template>
+        </section>
+
+        <section class="poll-list">
+          <div class="list-nav">
+            <div class="nav-left">
+              <button
+                class="nav-btn"
+                [class.nav-btn--active]="activeTab === 'active'"
+                (click)="switchTab('active')"
+              >Active surveys</button>
+              <button
+                class="nav-btn"
+                [class.nav-btn--active]="activeTab === 'past'"
+                (click)="switchTab('past')"
+              >Past surveys</button>
+            </div>
+
+            <div class="nav-right">
+              <button class="sort-btn" (click)="toggleSortMenu()">Sort by categories</button>
+              <div class="sort-menu" *ngIf="sortMenuOpen">
+                <button
+                  class="sort-opt"
+                  *ngFor="let cat of categoryOptions"
+                  (click)="filterByCategory(cat)"
+                >{{ cat }}</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="poll-grid">
+            <ng-container *ngIf="activeTab === 'active'; else pastView">
+              <ng-container *ngIf="activeSurveys.length > 0; else noActive">
+                <div
+                  class="poll-card"
+                  *ngFor="let s of activeSurveys"
+                  [routerLink]="['/survey', s.id]"
+                >
+                  <span class="poll-category">{{ s.category }}</span>
+                  <h3 class="poll-name">{{ s.title }}</h3>
+                  <p class="poll-desc">{{ s.description }}</p>
+                  <button class="poll-deadline">{{ s.endsIn }}</button>
+                </div>
+              </ng-container>
+              <ng-template #noActive>
+                <p class="empty-msg">No active surveys available</p>
+              </ng-template>
+            </ng-container>
+
+            <ng-template #pastView>
+              <ng-container *ngIf="pastSurveys.length > 0; else noPast">
+                <div
+                  class="poll-card"
+                  *ngFor="let s of pastSurveys"
+                  [routerLink]="['/survey', s.id]"
+                >
+                  <span class="poll-category">{{ s.category }}</span>
+                  <h3 class="poll-name">{{ s.title }}</h3>
+                  <p class="poll-desc">{{ s.description }}</p>
+                  <button class="poll-deadline">{{ s.endsIn }}</button>
+                </div>
+              </ng-container>
+              <ng-template #noPast>
+                <p class="empty-msg">No past surveys available</p>
+              </ng-template>
+            </ng-template>
+          </div>
+        </section>
+      </div>
+
+    </main>
   </div>
 </div>
-
-<section class="surveys">
-  <div class="surveys-header">
-    <h2 class="section-title">Your surveys</h2>
-    <h3 class="section-subtitle">Ending soon</h3>
-  </div>
-
-  <div class="card-row">
-    <a class="big-card-light" *ngFor="let s of surveys" [routerLink]="['/survey', s.id]">
-      <div class="card-content">
-        <div class="card-category">{{ s.category }}</div>
-        <h3 class="card-title">{{ s.title }}</h3>
-      </div>
-      <div class="card-footer">{{ s.endsIn }}</div>
-    </a>
-  </div>
-
-  <div class="list-section">
-    <div class="list-toolbar">
-      <div class="toolbar-group toolbar-left">
-        <button class="toolbar-button">Active surveys</button>
-        <button class="toolbar-button">Past surveys</button>
-      </div>
-      <div class="toolbar-group toolbar-right">
-        <button class="toolbar-button">Sort by categories</button>
-      </div>
-    </div>
-
-    <div class="list-row">
-      <a class="big-card-dark" *ngFor="let s of surveys" [routerLink]="['/survey', s.id]">
-        <div class="card-content">
-          <div class="card-category">{{ s.category }}</div>
-          <h3 class="card-title">{{ s.title }}</h3>
-          <p class="card-description">{{ s.description }}</p>
-        </div>
-        <div class="card-footer">{{ s.endsIn }}</div>
-      </a>
-    </div>
-  </div>
-</section>

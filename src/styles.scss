@@ -1,11 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Nerko+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nerko+One&family=Inter:wght@400;600;700&display=swap');
 
-html, body {
-	height: 100%;
-	margin: 0;
-	font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-	background: #2f2230;
-	color: #e6dfe6;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 400;
 }
 
-/* You can add global styles to this file, and also import other style files */
+html, body {
+  height: 100%;
+  background: rgb(53, 39, 58);
+  color: #e6dfe6;
+}
+
+button {
+  font-family: inherit;
+}

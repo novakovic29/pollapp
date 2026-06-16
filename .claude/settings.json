@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:kadir-saliu.developerakademie.net)",
+      "Bash(gh api *)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Skill(run)",
+      "Skill(run:*)",
+      "PowerShell(Start-Process -FilePath \"cmd.exe\" -ArgumentList \"/c cd C:\\\\Users\\\\Novakovic\\\\pollapp && npx ng serve --port 4200\" -WindowStyle Hidden)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4200)"
+    ]
+  }
+}
