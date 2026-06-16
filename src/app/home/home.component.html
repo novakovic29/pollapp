@@ -16,20 +16,29 @@
 </div>
 
 <section class="surveys">
-  <h2 class="section-title">Your surveys</h2>
+  <div class="surveys-header">
+    <h2 class="section-title">Your surveys</h2>
+    <h3 class="section-subtitle">Ending soon</h3>
+  </div>
 
   <div class="card-row">
-    <a class="big-card" *ngFor="let s of surveys" [routerLink]="['/survey', s.id]">
-      <div class="card-category">{{ s.category }}</div>
-      <h3 class="card-title">{{ s.title }}</h3>
+    <a class="big-card-light" *ngFor="let s of surveys" [routerLink]="['/survey', s.id]">
+      <div class="card-content">
+        <div class="card-category">{{ s.category }}</div>
+        <h3 class="card-title">{{ s.title }}</h3>
+      </div>
       <div class="card-footer">{{ s.endsIn }}</div>
     </a>
   </div>
 
   <div class="list-row">
-    <div class="list-item" *ngFor="let s of surveys">
-      <a [routerLink]="['/survey', s.id]">{{ s.title }}</a>
-      <span class="ends">{{ s.endsIn }}</span>
-    </div>
+    <a class="big-card-dark" *ngFor="let s of surveys" [routerLink]="['/survey', s.id]">
+      <div class="card-content">
+        <div class="card-category">{{ s.category }}</div>
+        <h3 class="card-title">{{ s.title }}</h3>
+        <p class="card-description">{{ s.description }}</p>
+      </div>
+      <div class="card-footer">{{ s.endsIn }}</div>
+    </a>
   </div>
 </section>
