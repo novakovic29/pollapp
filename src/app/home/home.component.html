@@ -28,16 +28,19 @@
         <span class="soon-label">Ending soon</span>
 
         <section class="soon-row">
-          <div class="soon-cards" *ngIf="soonEndingSurveys.length > 0; else noSoon">
-            <div class="soon-card" *ngFor="let s of soonEndingSurveys" [routerLink]="['/survey', s.id]">
-              <span class="item-category">{{ s.category }}</span>
-              <h3 class="item-name">{{ s.title }}</h3>
-              <button class="item-deadline">{{ s.endsIn }}</button>
+          @if (soonEndingPolls.length > 0) {
+            <div class="soon-cards">
+              @for (s of soonEndingPolls; track s.id) {
+                <div class="soon-card" [routerLink]="['/survey', s.id]">
+                  <span class="item-category">{{ s.category }}</span>
+                  <h3 class="item-name">{{ s.name }}</h3>
+                  <button class="item-deadline">Ends in {{ s.endsIn }}</button>
+                </div>
+              }
             </div>
-          </div>
-          <ng-template #noSoon>
+          } @else {
             <p class="empty-msg">No surveys ending soon</p>
-          </ng-template>
+          }
         </section>
 
         <section class="poll-list">
@@ -57,52 +60,44 @@
 
             <div class="nav-right">
               <button class="sort-btn" (click)="toggleSortMenu()">Sort by categories</button>
-              <div class="sort-menu" *ngIf="sortMenuOpen">
-                <button
-                  class="sort-opt"
-                  *ngFor="let cat of categoryOptions"
-                  (click)="filterByCategory(cat)"
-                >{{ cat }}</button>
-              </div>
+              @if (sortMenuOpen) {
+                <div class="sort-menu">
+                  @for (cat of categoryOptions; track cat) {
+                    <button class="sort-opt" (click)="filterByCategory(cat)">{{ cat }}</button>
+                  }
+                </div>
+              }
             </div>
           </div>
 
           <div class="poll-grid">
-            <ng-container *ngIf="activeTab === 'active'; else pastView">
-              <ng-container *ngIf="activeSurveys.length > 0; else noActive">
-                <div
-                  class="poll-card"
-                  *ngFor="let s of activeSurveys"
-                  [routerLink]="['/survey', s.id]"
-                >
-                  <span class="poll-category">{{ s.category }}</span>
-                  <h3 class="poll-name">{{ s.title }}</h3>
-                  <p class="poll-desc">{{ s.description }}</p>
-                  <button class="poll-deadline">{{ s.endsIn }}</button>
-                </div>
-              </ng-container>
-              <ng-template #noActive>
+            @if (activeTab === 'active') {
+              @if (activePolls.length > 0) {
+                @for (s of activePolls; track s.id) {
+                  <div class="poll-card" [routerLink]="['/survey', s.id]">
+                    <span class="poll-category">{{ s.category }}</span>
+                    <h3 class="poll-name">{{ s.name }}</h3>
+                    <p class="poll-desc">{{ s.description }}</p>
+                    <button class="poll-deadline">{{ s.endsIn }}</button>
+                  </div>
+                }
+              } @else {
                 <p class="empty-msg">No active surveys available</p>
-              </ng-template>
-            </ng-container>
-
-            <ng-template #pastView>
-              <ng-container *ngIf="pastSurveys.length > 0; else noPast">
-                <div
-                  class="poll-card"
-                  *ngFor="let s of pastSurveys"
-                  [routerLink]="['/survey', s.id]"
-                >
-                  <span class="poll-category">{{ s.category }}</span>
-                  <h3 class="poll-name">{{ s.title }}</h3>
-                  <p class="poll-desc">{{ s.description }}</p>
-                  <button class="poll-deadline">{{ s.endsIn }}</button>
-                </div>
-              </ng-container>
-              <ng-template #noPast>
+              }
+            } @else {
+              @if (pastPolls.length > 0) {
+                @for (s of pastPolls; track s.id) {
+                  <div class="poll-card" [routerLink]="['/survey', s.id]">
+                    <span class="poll-category">{{ s.category }}</span>
+                    <h3 class="poll-name">{{ s.name }}</h3>
+                    <p class="poll-desc">{{ s.description }}</p>
+                    <button class="poll-deadline">{{ s.endsIn }}</button>
+                  </div>
+                }
+              } @else {
                 <p class="empty-msg">No past surveys available</p>
-              </ng-template>
-            </ng-template>
+              }
+            }
           </div>
         </section>
       </div>

@@ -1,15 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-
-interface Survey {
-  id: string;
-  title: string;
-  category: string;
-  description: string;
-  endsIn: string;
-  isPast: boolean;
-}
+import { PollService } from '../core/services/poll.service';
+import { Poll } from '../core/models/poll.model';
+import { computeTimeRemaining } from '../core/utils/poll-date-utils';
 
 @Component({
   selector: 'app-home',
@@ -18,7 +12,7 @@ interface Survey {
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   activeTab: 'active' | 'past' = 'active';
   sortMenuOpen = false;
 
@@ -32,26 +26,37 @@ export class HomeComponent {
     'Technology & Innovation',
   ];
 
-  allSurveys: Survey[] = [
-    { id: '1', title: "Let's Plan the Next Team Event Together", category: 'Team Activities', description: 'Help us choose the perfect date, location, and activities for our next team gathering.', endsIn: 'Ends in 1 Day', isPast: false },
-    { id: '2', title: 'Fit & Wellness Survey!', category: 'Health & Wellness', description: 'A general survey about how people stay healthy in their daily life.', endsIn: 'Ends in 2 Days', isPast: false },
-    { id: '3', title: 'Gaming Habits and Favorite Games!', category: 'Gaming & Entertainment', description: 'Share your favorite games and gaming preferences with the community.', endsIn: 'Ends in 3 Days', isPast: false },
-    { id: '4', title: 'Remote Work Preferences', category: 'Lifestyle & Preferences', description: 'Tell us how you feel about working from home vs the office.', endsIn: 'Ended 5 Days ago', isPast: true },
-    { id: '5', title: 'AI Tools in the Workplace', category: 'Technology & Innovation', description: 'Share your experience using AI tools for productivity.', endsIn: 'Ended 10 Days ago', isPast: true },
-  ];
+  allPolls: Poll[] = [];
+  filteredPolls: Poll[] = [];
 
-  filteredSurveys: Survey[] = [...this.allSurveys];
+  constructor(private pollService: PollService, private cd: ChangeDetectorRef) {}
 
-  get soonEndingSurveys(): Survey[] {
-    return this.allSurveys.filter(s => !s.isPast);
+  async ngOnInit(): Promise<void> {
+    try {
+      const raw = await this.pollService.getAllPolls();
+      this.allPolls = raw.map(p => ({
+        ...p,
+        endsIn: computeTimeRemaining(p.end_date),
+        isActive: !p.end_date || new Date(p.end_date) >= new Date(),
+        isPast: !!p.end_date && new Date(p.end_date) < new Date(),
+      }));
+      this.filteredPolls = [...this.allPolls];
+      this.cd.detectChanges();
+    } catch {
+      // polls failed to load
+    }
   }
 
-  get activeSurveys(): Survey[] {
-    return this.filteredSurveys.filter(s => !s.isPast);
+  get soonEndingPolls(): Poll[] {
+    return this.allPolls.filter(p => p.isActive && !!p.end_date);
   }
 
-  get pastSurveys(): Survey[] {
-    return this.filteredSurveys.filter(s => s.isPast);
+  get activePolls(): Poll[] {
+    return this.filteredPolls.filter(p => p.isActive);
+  }
+
+  get pastPolls(): Poll[] {
+    return this.filteredPolls.filter(p => p.isPast);
   }
 
   switchTab(tab: 'active' | 'past'): void {
@@ -63,9 +68,9 @@ export class HomeComponent {
   }
 
   filterByCategory(cat: string): void {
-    this.filteredSurveys = cat === 'All Categories'
-      ? [...this.allSurveys]
-      : this.allSurveys.filter(s => s.category === cat);
+    this.filteredPolls = cat === 'All Categories'
+      ? [...this.allPolls]
+      : this.allPolls.filter(p => p.category === cat);
     this.sortMenuOpen = false;
   }
 }

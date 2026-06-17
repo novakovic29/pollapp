@@ -125,7 +125,7 @@ export class NewPollComponent {
         this.pollQuestions.value,
       );
       this.displayNotification('Your poll is now published');
-      setTimeout(() => this.router.navigate(['/home']), 2200);
+      setTimeout(() => this.router.navigate(['/']), 2200);
     } catch {
       this.isSending = false;
     }

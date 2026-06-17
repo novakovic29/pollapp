@@ -1,5 +1,98 @@
-<div class="survey-page">
-  <h2>Survey {{ id }}</h2>
-  <p>Placeholder for survey details. Replace with real implementation later.</p>
-  <a routerLink="/">Back</a>
-</div>
+@if (!isLoading) {
+  <div class="poll-detail-wrapper">
+    <div class="page-header">
+      <div class="header-row">
+        <img
+          src="assets/images/logo_purple.svg"
+          alt="Logo"
+          class="site-logo"
+          [routerLink]="['']"
+        />
+        <button class="new-poll-btn" [routerLink]="['/create-poll']">Create Survey</button>
+      </div>
+    </div>
+
+    <div class="poll-layout">
+      <div class="poll-content">
+        <header class="poll-status-bar">
+          <span class="status-badge">Published</span>
+          <button [routerLink]="''" class="sr-hidden">X</button>
+        </header>
+
+        <div class="poll-meta">
+          <span class="end-date-label">Ends on: {{ pollData?.end_date }}</span>
+          <span class="category-label">Category: {{ pollData?.category }}</span>
+        </div>
+
+        <h1 class="poll-title">{{ pollData?.name }}</h1>
+        <p class="poll-description">{{ pollData?.description }}</p>
+
+        @if (pollData?.questions?.length) {
+          <div class="poll-questions-grid">
+            @for (q of pollData!.questions; track q.id; let i = $index) {
+              <div class="question-card">
+                <h2 class="question-heading">{{ i + 1 }}. {{ q.text }}</h2>
+                <p class="selection-hint">
+                  {{ q.allow_multiple ? 'More than one answer is possible' : 'Choose one answer' }}
+                </p>
+                <div class="answer-list">
+                  @for (a of q.answers; track a.id; let j = $index) {
+                    <label class="answer-item">
+                      <input
+                        [type]="q.allow_multiple ? 'checkbox' : 'radio'"
+                        [name]="'q' + i"
+                        (change)="chooseAnswer(i, j)"
+                        [disabled]="alreadyVoted"
+                      />
+                      <span class="option-letter">{{ indexToLetter(j) }}.</span>
+                      <span class="option-text">{{ a.text }}</span>
+                    </label>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        <div class="action-btn-wrapper">
+          <button class="vote-submit-btn" (click)="submitVotes()" [disabled]="alreadyVoted">
+            Complete survey
+          </button>
+        </div>
+      </div>
+
+      <button class="toggle-results-btn" (click)="resultsVisible = !resultsVisible">
+        {{ resultsVisible ? 'Hide results' : 'Show results' }}
+      </button>
+
+      @if (resultsVisible) {
+        <div class="results-panel">
+          <h2 class="results-heading">Survey results LIVE</h2>
+          @if (hasResults()) {
+            @for (q of pollData!.questions; track q.id; let i = $index) {
+              <div class="result-card">
+                <h3 class="result-question-text">{{ i + 1 }}. {{ q.text }}</h3>
+                @for (a of q.answers; track a.id; let j = $index) {
+                  <div class="result-item-row">
+                    <span class="option-letter">{{ indexToLetter(j) }}</span>
+                    <div class="progress-track">
+                      <div class="progress-fill" [style.width.%]="a.percentage"></div>
+                    </div>
+                    <span class="vote-pct">{{ a.percentage }}%</span>
+                  </div>
+                }
+              </div>
+            }
+          } @else {
+            <div class="empty-results-card">
+              <p class="empty-results-msg">
+                Results will be shown here after participants complete the survey.
+              </p>
+              <p class="empty-results-note">There are no answers yet.</p>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}
