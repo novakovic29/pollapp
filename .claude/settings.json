@@ -8,7 +8,9 @@
       "Skill(run)",
       "Skill(run:*)",
       "PowerShell(Start-Process -FilePath \"cmd.exe\" -ArgumentList \"/c cd C:\\\\Users\\\\Novakovic\\\\pollapp && npx ng serve --port 4200\" -WindowStyle Hidden)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4200)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4200)",
+      "PowerShell(gh api repos/Kadir-Saliu/poll-app/contents/src/app/pages/create-survey --jq '.[].name')",
+      "PowerShell($response = Invoke-WebRequest -Uri \"https://raw.githubusercontent.com/Kadir-Saliu/poll-app/master/src/app/pages/create-survey/create-survey.html\" -UseBasicParsing; $response.Content)"
     ]
   }
 }
