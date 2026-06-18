@@ -12,6 +12,7 @@ import {
 import { UserVoteService } from '../core/services/user-vote.service';
 import { DatabaseService } from '../core/services/database.service';
 
+/** Displays a single poll, handles answer selection, live preview, and vote submission. */
 @Component({
   selector: 'app-survey',
   standalone: true,
@@ -20,10 +21,19 @@ import { DatabaseService } from '../core/services/database.service';
   styleUrls: ['./survey.component.scss'],
 })
 export class SurveyComponent implements OnInit {
+  /** Whether the results panel is visible. */
   resultsVisible = true;
+
+  /** Full poll data including questions and answers, or null while loading. */
   pollData: PollDetailView | null = null;
+
+  /** True while the initial data fetch is in progress. */
   isLoading = true;
+
+  /** True when the current user has already submitted a vote for this poll. */
   alreadyVoted = false;
+
+  /** Vote records fetched from the database, used as the baseline for live preview. */
   private baseVotes: VoteRecord[] = [];
 
   constructor(
@@ -33,25 +43,21 @@ export class SurveyComponent implements OnInit {
     private db: DatabaseService,
   ) {}
 
+  /** Subscribes to route params and triggers poll loading on navigation. */
   ngOnInit(): void {
     this.route.paramMap.subscribe((p) => {
       const id = p.get('id');
       if (id) {
-        const voted = localStorage.getItem(`survey_voted_${id}`);
-        this.alreadyVoted = voted === 'true';
+        this.alreadyVoted = localStorage.getItem(`survey_voted_${id}`) === 'true';
         this.initPollData(id);
       }
     });
   }
 
+  /** Fetches the poll, its questions, and all answer options, then loads existing vote results. */
   async initPollData(id: string): Promise<void> {
     try {
-      const poll = await getPollById(this.db.client, id);
-      const questions = await getPollQuestions(this.db.client, id);
-      for (const q of questions) {
-        q.answers = await getQuestionAnswers(this.db.client, q.id);
-      }
-      this.pollData = { ...poll, questions };
+      this.pollData = await this.loadPollWithQuestions(id);
       this.isLoading = false;
       this.cdr.detectChanges();
       await this.refreshResults();
@@ -60,23 +66,91 @@ export class SurveyComponent implements OnInit {
     }
   }
 
+  /** Loads a poll and eagerly resolves all answer options for each question. */
+  private async loadPollWithQuestions(id: string): Promise<PollDetailView> {
+    const poll = await getPollById(this.db.client, id);
+    const questions = await getPollQuestions(this.db.client, id);
+    for (const q of questions) q.answers = await getQuestionAnswers(this.db.client, q.id);
+    return { ...poll, questions };
+  }
+
+  /** Converts a zero-based answer index to its uppercase letter label (0 → 'A'). */
   indexToLetter(i: number): string {
     return String.fromCharCode(65 + i);
   }
 
+  /** Toggles or exclusively selects an answer, then updates the live preview. */
   chooseAnswer(qIndex: number, aIndex: number): void {
     if (this.alreadyVoted) return;
     const q = this.pollData!.questions[qIndex];
     if (q.allow_multiple) {
       q.answers[aIndex].selected = !q.answers[aIndex].selected;
     } else {
-      q.answers.forEach((a: AnswerOption, i: number) => {
-        a.selected = i === aIndex;
-      });
+      q.answers.forEach((a: AnswerOption, i: number) => { a.selected = i === aIndex; });
     }
     this.updatePreview();
   }
 
+  /** True when every question has at least one selected answer. */
+  get allAnswered(): boolean {
+    return !!this.pollData?.questions?.every((q) => q.answers.some((a) => a.selected));
+  }
+
+  /** True when any answer option has a non-zero vote percentage. */
+  hasResults(): boolean {
+    return this.pollData?.questions?.some((q) => q.answers.some((a) => (a.percentage ?? 0) > 0)) ?? false;
+  }
+
+  /** Submits the selected answers, persists the voted state, and refreshes results. */
+  async submitVotes(): Promise<void> {
+    if (this.alreadyVoted) return;
+    try {
+      await this.castAllVotes();
+      this.markAsVoted();
+      this.cdr.detectChanges();
+      await this.refreshResults();
+    } catch {
+      this.cdr.detectChanges();
+    }
+  }
+
+  /** Sends a vote record for every selected answer across all questions. */
+  private async castAllVotes(): Promise<void> {
+    for (const q of this.pollData!.questions) {
+      for (const selected of q.answers.filter((a) => a.selected)) {
+        await this.userVoteService.castVote({
+          poll_id: Number(this.pollData!.id),
+          question_id: Number(q.id),
+          option_id: Number(selected.id),
+        });
+      }
+    }
+  }
+
+  /** Persists the voted flag to localStorage and clears all selected answers. */
+  private markAsVoted(): void {
+    this.alreadyVoted = true;
+    localStorage.setItem(`survey_voted_${this.pollData!.id}`, 'true');
+    this.pollData!.questions = this.pollData!.questions.map((q) => ({
+      ...q,
+      answers: q.answers.map((a) => ({ ...a, selected: false })),
+    }));
+  }
+
+  /** Fetches the latest vote counts and recalculates percentages. */
+  async refreshResults(): Promise<void> {
+    try {
+      const votes = await getPollVotes(this.db.client, Number(this.pollData!.id));
+      this.baseVotes = votes;
+      this.pollData!.questions = applyVotePercentages(this.pollData!.questions, votes);
+      this.cdr.detectChanges();
+    } catch {}
+  }
+
+  /**
+   * Recalculates live preview percentages by combining the base votes with the
+   * currently selected (but not yet submitted) answers.
+   */
   private updatePreview(): void {
     if (!this.pollData) return;
     const previewVotes = [...this.baseVotes];
@@ -87,50 +161,5 @@ export class SurveyComponent implements OnInit {
     }
     this.pollData.questions = applyVotePercentages(this.pollData.questions, previewVotes);
     this.cdr.detectChanges();
-  }
-
-  get allAnswered(): boolean {
-    return !!this.pollData?.questions?.every(q => q.answers.some(a => a.selected));
-  }
-
-  hasResults(): boolean {
-    return (
-      this.pollData?.questions?.some((q) => q.answers.some((a) => (a.percentage ?? 0) > 0)) ?? false
-    );
-  }
-
-  async submitVotes(): Promise<void> {
-    if (this.alreadyVoted) return;
-    try {
-      for (const q of this.pollData!.questions) {
-        const selectedAnswers = q.answers.filter((a) => a.selected);
-        for (const selected of selectedAnswers) {
-          await this.userVoteService.castVote({
-            poll_id: Number(this.pollData!.id),
-            question_id: Number(q.id),
-            option_id: Number(selected.id),
-          });
-        }
-      }
-      this.alreadyVoted = true;
-      localStorage.setItem(`survey_voted_${this.pollData!.id}`, 'true');
-      this.pollData!.questions = this.pollData!.questions.map((q) => ({
-        ...q,
-        answers: q.answers.map((a) => ({ ...a, selected: false })),
-      }));
-      this.cdr.detectChanges();
-      await this.refreshResults();
-    } catch {
-      this.cdr.detectChanges();
-    }
-  }
-
-  async refreshResults(): Promise<void> {
-    try {
-      const votes = await getPollVotes(this.db.client, Number(this.pollData!.id));
-      this.baseVotes = votes;
-      this.pollData!.questions = applyVotePercentages(this.pollData!.questions, votes);
-      this.cdr.detectChanges();
-    } catch {}
   }
 }
