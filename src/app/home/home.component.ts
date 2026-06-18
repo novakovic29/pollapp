@@ -34,12 +34,18 @@ export class HomeComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     try {
       const raw = await this.pollService.getAllPolls();
-      this.allPolls = raw.map(p => ({
-        ...p,
-        endsIn: computeTimeRemaining(p.end_date),
-        isActive: !p.end_date || new Date(p.end_date) >= new Date(),
-        isPast: !!p.end_date && new Date(p.end_date) < new Date(),
-      }));
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      this.allPolls = raw.map(p => {
+        const endDate = p.end_date ? new Date(p.end_date) : null;
+        if (endDate) endDate.setHours(0, 0, 0, 0);
+        return {
+          ...p,
+          endsIn: computeTimeRemaining(p.end_date),
+          isActive: !endDate || endDate >= today,
+          isPast: !!endDate && endDate < today,
+        };
+      });
       this.filteredPolls = [...this.allPolls];
       this.cd.detectChanges();
     } catch {
@@ -74,10 +80,13 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  selectedCategory: string | null = null;
+
   filterByCategory(cat: string): void {
     this.filteredPolls = cat === 'All Categories'
       ? [...this.allPolls]
       : this.allPolls.filter(p => p.category === cat);
+    this.selectedCategory = cat === 'All Categories' ? null : cat;
     this.sortMenuOpen = false;
   }
 }

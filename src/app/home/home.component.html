@@ -59,7 +59,12 @@
             </div>
 
             <div class="nav-right">
-              <button class="sort-btn" (click)="toggleSortMenu()">Sort by categories</button>
+              <div class="sort-row">
+                <button class="sort-btn" (click)="toggleSortMenu()">Sort by categories</button>
+                @if (selectedCategory) {
+                  <span class="active-category">{{ selectedCategory }} <button class="clear-filter" (click)="filterByCategory('All Categories')">✕</button></span>
+                }
+              </div>
               @if (sortMenuOpen) {
                 <div class="sort-menu">
                   @for (cat of categoryOptions; track cat) {
@@ -78,7 +83,9 @@
                     <span class="poll-category">{{ s.category }}</span>
                     <h3 class="poll-name">{{ s.name }}</h3>
                     <p class="poll-desc">{{ s.description }}</p>
-                    <button class="poll-deadline">{{ s.endsIn }}</button>
+                    @if (s.end_date) {
+                      <button class="poll-deadline">{{ s.endsIn }}</button>
+                    }
                   </div>
                 }
               } @else {
@@ -91,7 +98,9 @@
                     <span class="poll-category">{{ s.category }}</span>
                     <h3 class="poll-name">{{ s.name }}</h3>
                     <p class="poll-desc">{{ s.description }}</p>
-                    <button class="poll-deadline">{{ s.endsIn }}</button>
+                    @if (s.end_date) {
+                      <button class="poll-deadline">{{ s.endsIn }}</button>
+                    }
                   </div>
                 }
               } @else {

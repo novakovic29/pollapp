@@ -1,17 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Nerko+One&family=Inter:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nerko+One&family=Inter:wght@400;600;700;800&display=swap');
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  font-weight: 400;
 }
 
 html, body {
   height: 100%;
   background: rgb(53, 39, 58);
   color: #e6dfe6;
+  font-weight: 400;
 }
 
 button {

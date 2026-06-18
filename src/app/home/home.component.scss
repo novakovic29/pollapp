@@ -92,7 +92,7 @@ $text-muted:   #ccc;
   border-radius: 8px;
   border: none;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 900;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -122,20 +122,22 @@ $text-muted:   #ccc;
   position: relative;
   width: 100%;
   max-width: 380px;
+  aspect-ratio: 1;
 
   img {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: contain;
+    object-position: center center;
     display: block;
     user-select: none;
-    border-radius: 8px;
     transition: opacity 0.6s ease-in-out;
   }
 
   .visual-hover {
-    position: absolute;
-    top: 0;
-    left: 0;
     opacity: 0;
   }
 
@@ -162,8 +164,10 @@ $text-muted:   #ccc;
 .soon-label {
   color: white;
   font-size: 32px;
-  font-weight: 600;
+  font-weight: 400;
   margin-top: 4px;
+  align-self: flex-start;
+  padding-left: 20px;
 }
 
 /* ── Ending-soon cards ── */
@@ -294,6 +298,37 @@ $text-muted:   #ccc;
 /* ── Sort control ── */
 .nav-right {
   position: relative;
+}
+
+.sort-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.active-category {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: $orange-main;
+  color: $purple-dark;
+  padding: 6px 12px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.clear-filter {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $purple-dark;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 0;
+  line-height: 1;
+
+  &:hover { opacity: 0.6; }
 }
 
 .sort-btn {
