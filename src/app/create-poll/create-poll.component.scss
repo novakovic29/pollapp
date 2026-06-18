@@ -37,11 +37,18 @@
   margin-bottom: 4px;
 }
 
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .header-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
+  padding-left: 12px;
 
   h2 {
     margin: 0;
@@ -720,7 +727,7 @@
   }
 }
 
-@media (max-width: 440px) {
+@media (max-width: 640px) {
   .poll-page-content {
     padding: 0;
   }
@@ -732,7 +739,15 @@
   .poll-main-body {
     padding: 16px;
   }
+}
 
+@media (max-width: 660px) {
+  .top-bar {
+    padding-right: 30px;
+  }
+}
+
+@media (max-width: 480px) {
   .field-input-row {
     flex-direction: column;
     position: relative;
@@ -755,7 +770,7 @@
   }
 
   .option-row input {
-    margin-top: 20px;
+    margin-top: 6px;
   }
 }
 

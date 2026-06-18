@@ -95,7 +95,9 @@ export class NewPollComponent {
   }
 
   deleteQuestion(index: number): void {
-    this.pollQuestions.removeAt(index);
+    if (this.pollQuestions.length > 1) {
+      this.pollQuestions.removeAt(index);
+    }
   }
 
   appendOption(questionIndex: number): void {
@@ -103,7 +105,18 @@ export class NewPollComponent {
   }
 
   deleteOption(questionIndex: number, answerIndex: number): void {
-    removeOptionFromQuestion(this.pollQuestions.at(questionIndex), answerIndex);
+    const q = this.pollQuestions.at(questionIndex);
+    const answers = q.get('answers') as FormArray<FormGroup>;
+    if (answers.length > 2) {
+      removeOptionFromQuestion(q, answerIndex);
+    } else {
+      answers.at(answerIndex).get('text')?.setValue('');
+    }
+  }
+
+  clearField(fieldName: string): void {
+    this.pollForm.get(fieldName)?.setValue('');
+    if (fieldName === 'category') this.chosenCategory = null;
   }
 
   indexToLetter(index: number): string {
@@ -111,8 +124,13 @@ export class NewPollComponent {
   }
 
   async submitPoll(): Promise<void> {
-    if (this.pollForm.invalid || this.pollQuestions.length === 0) {
+    if (this.pollQuestions.length === 0) {
+      this.displayNotification('Please add at least one question');
+      return;
+    }
+    if (this.pollForm.invalid) {
       this.pollForm.markAllAsTouched();
+      this.displayNotification('Please fill in all required fields');
       return;
     }
     this.isSending = true;

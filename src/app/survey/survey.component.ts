@@ -1,7 +1,7 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { PollDetailView, AnswerOption } from '../core/models/poll-detail.models';
+import { PollDetailView, AnswerOption, VoteRecord } from '../core/models/poll-detail.models';
 import {
   getPollById,
   getPollQuestions,
@@ -24,6 +24,7 @@ export class SurveyComponent implements OnInit {
   pollData: PollDetailView | null = null;
   isLoading = true;
   alreadyVoted = false;
+  private baseVotes: VoteRecord[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -66,9 +67,30 @@ export class SurveyComponent implements OnInit {
   chooseAnswer(qIndex: number, aIndex: number): void {
     if (this.alreadyVoted) return;
     const q = this.pollData!.questions[qIndex];
-    q.answers.forEach((a: AnswerOption, i: number) => {
-      a.selected = i === aIndex;
-    });
+    if (q.allow_multiple) {
+      q.answers[aIndex].selected = !q.answers[aIndex].selected;
+    } else {
+      q.answers.forEach((a: AnswerOption, i: number) => {
+        a.selected = i === aIndex;
+      });
+    }
+    this.updatePreview();
+  }
+
+  private updatePreview(): void {
+    if (!this.pollData) return;
+    const previewVotes = [...this.baseVotes];
+    for (const q of this.pollData.questions) {
+      for (const a of q.answers) {
+        if (a.selected) previewVotes.push({ option_id: a.id });
+      }
+    }
+    this.pollData.questions = applyVotePercentages(this.pollData.questions, previewVotes);
+    this.cdr.detectChanges();
+  }
+
+  get allAnswered(): boolean {
+    return !!this.pollData?.questions?.every(q => q.answers.some(a => a.selected));
   }
 
   hasResults(): boolean {
@@ -79,28 +101,34 @@ export class SurveyComponent implements OnInit {
 
   async submitVotes(): Promise<void> {
     if (this.alreadyVoted) return;
-    for (const q of this.pollData!.questions) {
-      const selected = q.answers.find((a) => a.selected);
-      if (!selected) continue;
-      await this.userVoteService.castVote({
-        poll_id: Number(this.pollData!.id),
-        question_id: Number(q.id),
-        option_id: Number(selected.id),
-      });
+    try {
+      for (const q of this.pollData!.questions) {
+        const selectedAnswers = q.answers.filter((a) => a.selected);
+        for (const selected of selectedAnswers) {
+          await this.userVoteService.castVote({
+            poll_id: Number(this.pollData!.id),
+            question_id: Number(q.id),
+            option_id: Number(selected.id),
+          });
+        }
+      }
+      this.alreadyVoted = true;
+      localStorage.setItem(`survey_voted_${this.pollData!.id}`, 'true');
+      this.pollData!.questions = this.pollData!.questions.map((q) => ({
+        ...q,
+        answers: q.answers.map((a) => ({ ...a, selected: false })),
+      }));
+      this.cdr.detectChanges();
+      await this.refreshResults();
+    } catch {
+      this.cdr.detectChanges();
     }
-    this.alreadyVoted = true;
-    localStorage.setItem(`survey_voted_${this.pollData!.id}`, 'true');
-    this.pollData!.questions = this.pollData!.questions.map((q) => ({
-      ...q,
-      answers: q.answers.map((a) => ({ ...a, selected: false })),
-    }));
-    this.cdr.detectChanges();
-    await this.refreshResults();
   }
 
   async refreshResults(): Promise<void> {
     try {
       const votes = await getPollVotes(this.db.client, Number(this.pollData!.id));
+      this.baseVotes = votes;
       this.pollData!.questions = applyVotePercentages(this.pollData!.questions, votes);
       this.cdr.detectChanges();
     } catch {}

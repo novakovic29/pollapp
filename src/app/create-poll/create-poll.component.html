@@ -3,13 +3,15 @@
   <div class="poll-page-content">
     <div class="poll-creator-container">
       <form [formGroup]="pollForm">
-        <span class="badge draft">Draft</span>
-
-        <div class="header-bar">
-          <h2>Create new poll</h2>
+        <div class="top-bar">
+          <span class="badge draft">Draft</span>
           <button class="back-btn" [routerLink]="['/']">
             <span class="back-label">Cancel</span> X
           </button>
+        </div>
+
+        <div class="header-bar">
+          <h2>Create new poll</h2>
         </div>
 
         <section class="poll-main-body">
@@ -21,7 +23,7 @@
                 <div class="field-input-wrapper">
                   <div class="field-input-row">
                     <input type="text" formControlName="name" />
-                    <button class="remove-btn">
+                    <button type="button" class="remove-btn" (click)="clearField('name')">
                       <img src="assets/images/delete.svg" class="delete-icon" alt="" />
                       <img src="assets/images/delete_hover.svg" class="delete-icon-hover" alt="" />
                     </button>
@@ -49,7 +51,7 @@
                       [min]="minDate"
                       onkeydown="return false;"
                     />
-                    <button class="remove-btn">
+                    <button type="button" class="remove-btn" (click)="clearField('endDate')">
                       <img src="assets/images/delete.svg" class="delete-icon" alt="" />
                       <img src="assets/images/delete_hover.svg" class="delete-icon-hover" alt="" />
                     </button>
@@ -131,7 +133,7 @@
                 <label>Describing text (optional)</label>
                 <div class="field-input-row">
                   <textarea formControlName="description"></textarea>
-                  <button class="remove-btn">
+                  <button type="button" class="remove-btn" (click)="clearField('description')">
                     <img src="assets/images/delete.svg" class="delete-icon" alt="" />
                     <img src="assets/images/delete_hover.svg" class="delete-icon-hover" alt="" />
                   </button>
@@ -147,7 +149,7 @@
                   <div class="question-card" [formGroup]="q">
                     <div class="question-card-header">
                       <h2>{{ i + 1 }}. Question</h2>
-                      <button class="remove-btn" (click)="deleteQuestion(i)">
+                      <button class="remove-btn" (click)="deleteQuestion(i)" [disabled]="pollQuestions.length === 1" [style.opacity]="pollQuestions.length === 1 ? '0.3' : '1'">
                         <img src="assets/images/delete.svg" class="delete-icon" alt="" />
                         <img src="assets/images/delete_hover.svg" class="delete-icon-hover" alt="" />
                       </button>
@@ -250,7 +252,7 @@
                   <div class="question-card" [formGroup]="q">
                     <div class="question-card-header">
                       <h2>{{ i + 1 }}. Question</h2>
-                      <button class="remove-btn" (click)="deleteQuestion(i)">
+                      <button class="remove-btn" (click)="deleteQuestion(i)" [disabled]="pollQuestions.length === 1" [style.opacity]="pollQuestions.length === 1 ? '0.3' : '1'">
                         <img src="assets/images/delete.svg" class="delete-icon" alt="" />
                         <img src="assets/images/delete_hover.svg" class="delete-icon-hover" alt="" />
                       </button>

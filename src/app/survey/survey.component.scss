@@ -206,6 +206,17 @@
 /* ── Submit button ── */
 .action-btn-wrapper {
   align-self: flex-end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.ready-hint {
+  font-size: 14px;
+  color: rgb(238, 146, 54);
+  font-weight: 600;
+  margin: 0;
 }
 
 .vote-submit-btn {
@@ -223,9 +234,14 @@
     background-color: rgb(255, 183, 112);
   }
 
-  &:disabled {
+  &:disabled,
+  &.voted {
     opacity: 0.5;
     cursor: default;
+
+    &:hover {
+      background-color: rgb(255, 207, 161);
+    }
   }
 }
 
