@@ -161,13 +161,19 @@ $text-muted:   #ccc;
   margin: 0;
 }
 
+.soon-block {
+  max-width: 1200px;
+  width: 100%;
+  padding: 0 40px;
+  display: flex;
+  flex-direction: column;
+}
+
 .soon-label {
   color: white;
   font-size: 32px;
   font-weight: 400;
   margin-top: 4px;
-  align-self: flex-start;
-  padding-left: 20px;
 }
 
 /* ── Ending-soon cards ── */
@@ -177,7 +183,7 @@ $text-muted:   #ccc;
   justify-content: center;
   width: 100%;
   overflow-x: auto;
-  padding: 10px 20px;
+  padding: 10px 0;
   scrollbar-width: none;
   -ms-overflow-style: none;
 
@@ -448,6 +454,7 @@ $text-muted:   #ccc;
   .hero-block { padding: 0 20px; }
   .hero-text h1 { font-size: 42px; }
   .surveys-main-title { font-size: 36px; }
+  .soon-block { padding: 0 20px; }
   .soon-label { font-size: 22px; }
 }
 
