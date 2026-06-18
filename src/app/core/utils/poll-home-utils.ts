@@ -3,6 +3,9 @@ import { HomePollItem } from '../models/home-poll.model';
 /**
  * Returns one poll per category — the one with the earliest end date.
  * Polls without a category are grouped under `'Uncategorized'`.
+ *
+ * @param polls - The full list of polls to group.
+ * @returns One representative poll per category, sorted by earliest end date.
  */
 export function getSoonestPerCategory(polls: HomePollItem[]): HomePollItem[] {
   const map = new Map<string, HomePollItem>();
@@ -18,6 +21,9 @@ export function getSoonestPerCategory(polls: HomePollItem[]): HomePollItem[] {
 
 /**
  * Splits a flat poll list into active and past sub-lists.
+ *
+ * @param polls - The full list of polls to partition.
+ * @returns An object with `activePolls` and `pastPolls` arrays.
  */
 export function partitionPollsByDate(polls: HomePollItem[]) {
   return {
@@ -29,6 +35,9 @@ export function partitionPollsByDate(polls: HomePollItem[]) {
 /**
  * Derives all data needed by the home page from a raw poll list.
  * Returns empty arrays when the input is empty or nullish.
+ *
+ * @param polls - The raw list of enriched polls from the database.
+ * @returns An object with `soonEnding`, `activePolls`, `pastPolls`, and `categoryCards` arrays.
  */
 export function buildHomePollData(polls: HomePollItem[]) {
   if (!polls?.length)
@@ -39,12 +48,23 @@ export function buildHomePollData(polls: HomePollItem[]) {
   return { soonEnding, activePolls, pastPolls, categoryCards: [...polls] };
 }
 
-/** Returns only the polls whose category matches {@link category}. */
+/**
+ * Returns only the polls whose category matches {@link category}.
+ *
+ * @param polls - The list of polls to filter.
+ * @param category - The category name to match against.
+ * @returns Polls whose category equals {@link category}.
+ */
 function groupByCategory(polls: HomePollItem[], category: string): HomePollItem[] {
   return polls.filter((s) => (s.category ?? 'Uncategorized') === category);
 }
 
-/** Splits a poll list into active and past buckets. */
+/**
+ * Splits a poll list into active and past buckets.
+ *
+ * @param polls - The list of polls to divide.
+ * @returns An object with `active` and `past` arrays.
+ */
 function divideByStatus(polls: HomePollItem[]): { active: HomePollItem[]; past: HomePollItem[] } {
   return {
     active: polls.filter((s) => s.isActive),
@@ -55,6 +75,11 @@ function divideByStatus(polls: HomePollItem[]): { active: HomePollItem[]; past: 
 /**
  * Filters polls by category and active tab, returning separate active/past lists.
  * Returns empty lists when {@link category} is falsy.
+ *
+ * @param polls - The full list of polls to filter.
+ * @param category - The category to filter by; empty string resets to no filter.
+ * @param activeTab - Which tab is visible (`'active'` or `'past'`).
+ * @returns An object with `activePolls` and `pastPolls` arrays for the current view.
  */
 export function filterPollsByCategory(
   polls: HomePollItem[],

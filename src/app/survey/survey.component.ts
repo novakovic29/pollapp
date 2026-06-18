@@ -54,7 +54,11 @@ export class SurveyComponent implements OnInit {
     });
   }
 
-  /** Fetches the poll, its questions, and all answer options, then loads existing vote results. */
+  /**
+   * Fetches the poll, its questions, and all answer options, then loads existing vote results.
+   *
+   * @param id - The string id of the poll to load.
+   */
   async initPollData(id: string): Promise<void> {
     try {
       this.pollData = await this.loadPollWithQuestions(id);
@@ -66,7 +70,12 @@ export class SurveyComponent implements OnInit {
     }
   }
 
-  /** Loads a poll and eagerly resolves all answer options for each question. */
+  /**
+   * Loads a poll and eagerly resolves all answer options for each question.
+   *
+   * @param id - The string id of the poll to load.
+   * @returns The fully populated {@link PollDetailView} including questions and answers.
+   */
   private async loadPollWithQuestions(id: string): Promise<PollDetailView> {
     const poll = await getPollById(this.db.client, id);
     const questions = await getPollQuestions(this.db.client, id);
@@ -74,12 +83,22 @@ export class SurveyComponent implements OnInit {
     return { ...poll, questions };
   }
 
-  /** Converts a zero-based answer index to its uppercase letter label (0 → 'A'). */
+  /**
+   * Converts a zero-based answer index to its uppercase letter label (0 → `'A'`).
+   *
+   * @param i - Zero-based index of the answer option.
+   * @returns The corresponding uppercase letter string.
+   */
   indexToLetter(i: number): string {
     return String.fromCharCode(65 + i);
   }
 
-  /** Toggles or exclusively selects an answer, then updates the live preview. */
+  /**
+   * Toggles or exclusively selects an answer, then updates the live preview.
+   *
+   * @param qIndex - Zero-based index of the question in the questions array.
+   * @param aIndex - Zero-based index of the answer option within that question.
+   */
   chooseAnswer(qIndex: number, aIndex: number): void {
     if (this.alreadyVoted) return;
     const q = this.pollData!.questions[qIndex];
@@ -96,7 +115,11 @@ export class SurveyComponent implements OnInit {
     return !!this.pollData?.questions?.every((q) => q.answers.some((a) => a.selected));
   }
 
-  /** True when any answer option has a non-zero vote percentage. */
+  /**
+   * True when any answer option has a non-zero vote percentage.
+   *
+   * @returns `true` if at least one answer has votes, `false` otherwise.
+   */
   hasResults(): boolean {
     return this.pollData?.questions?.some((q) => q.answers.some((a) => (a.percentage ?? 0) > 0)) ?? false;
   }
@@ -139,12 +162,10 @@ export class SurveyComponent implements OnInit {
 
   /** Fetches the latest vote counts and recalculates percentages. */
   async refreshResults(): Promise<void> {
-    try {
-      const votes = await getPollVotes(this.db.client, Number(this.pollData!.id));
-      this.baseVotes = votes;
-      this.pollData!.questions = applyVotePercentages(this.pollData!.questions, votes);
-      this.cdr.detectChanges();
-    } catch {}
+    const votes = await getPollVotes(this.db.client, Number(this.pollData!.id));
+    this.baseVotes = votes;
+    this.pollData!.questions = applyVotePercentages(this.pollData!.questions, votes);
+    this.cdr.detectChanges();
   }
 
   /**

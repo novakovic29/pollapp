@@ -5,7 +5,7 @@
       <form [formGroup]="pollForm">
         <div class="top-bar">
           <span class="badge draft">Draft</span>
-          <button class="back-btn" [routerLink]="['/']">
+          <button type="button" class="back-btn" [routerLink]="['/']">
             <span class="back-label">Cancel</span> X
           </button>
         </div>
@@ -206,7 +206,7 @@
                       </div>
                     </div>
 
-                    <button class="new-option-btn" (click)="appendOption(i)">
+                    <button type="button" class="new-option-btn" (click)="appendOption(i)">
                       Add answer
                       <svg
                         width="16"
@@ -226,6 +226,7 @@
               </ng-container>
 
               <button
+                type="button"
                 class="new-question-btn"
                 *ngIf="pollQuestions.length % 2 === 0"
                 (click)="appendQuestion()"
@@ -309,7 +310,7 @@
                       </div>
                     </div>
 
-                    <button class="new-option-btn" (click)="appendOption(i)">
+                    <button type="button" class="new-option-btn" (click)="appendOption(i)">
                       Add answer
                       <svg
                         width="16"
@@ -329,6 +330,7 @@
               </ng-container>
 
               <button
+                type="button"
                 class="new-question-btn"
                 *ngIf="pollQuestions.length % 2 === 1"
                 (click)="appendQuestion()"

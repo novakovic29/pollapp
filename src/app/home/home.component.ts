@@ -69,7 +69,11 @@ export class HomeComponent implements OnInit {
     return this.filteredPolls.filter((p) => p.isPast);
   }
 
-  /** Switches the visible tab between active and past surveys. */
+  /**
+   * Switches the visible tab between active and past surveys.
+   *
+   * @param tab - The tab to activate (`'active'` or `'past'`).
+   */
   switchTab(tab: 'active' | 'past'): void {
     this.activeTab = tab;
   }
@@ -79,7 +83,11 @@ export class HomeComponent implements OnInit {
     this.sortMenuOpen = !this.sortMenuOpen;
   }
 
-  /** Filters the poll list to the given category, or resets to all when 'All Categories' is passed. */
+  /**
+   * Filters the poll list to the given category, or resets to all when `'All Categories'` is passed.
+   *
+   * @param cat - The category name to filter by, or `'All Categories'` to clear the filter.
+   */
   filterByCategory(cat: string): void {
     this.filteredPolls =
       cat === 'All Categories' ? [...this.allPolls] : this.allPolls.filter((p) => p.category === cat);
@@ -87,7 +95,11 @@ export class HomeComponent implements OnInit {
     this.sortMenuOpen = false;
   }
 
-  /** Closes the sort dropdown when the user clicks outside the nav-right container. */
+  /**
+   * Closes the sort dropdown when the user clicks outside the nav-right container.
+   *
+   * @param event - The native mouse event from the document click listener.
+   */
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     if (this.sortMenuOpen && !(event.target as HTMLElement).closest('.nav-right')) {
@@ -98,6 +110,9 @@ export class HomeComponent implements OnInit {
   /**
    * Adds computed display fields (`endsIn`, `isActive`, `isPast`) to a raw poll.
    * Both dates are normalised to midnight so same-day polls count as active.
+   *
+   * @param p - The raw poll record from the database.
+   * @returns The same poll enriched with computed date fields.
    */
   private enrichPoll(p: Poll): Poll {
     const today = new Date();

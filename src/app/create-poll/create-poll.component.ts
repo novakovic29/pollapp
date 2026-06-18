@@ -76,7 +76,11 @@ export class NewPollComponent {
     });
   }
 
-  /** Validator that rejects end dates in the past. */
+  /**
+   * Validator that rejects end dates in the past.
+   *
+   * @returns A {@link ValidatorFn} that returns `{ minDate: true }` for past dates, or `null` when valid.
+   */
   dateRangeValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value;
@@ -90,19 +94,32 @@ export class NewPollComponent {
     this.categoryOpen = !this.categoryOpen;
   }
 
-  /** Selects a category from the dropdown and syncs it to the form control. */
+  /**
+   * Selects a category from the dropdown and syncs it to the form control.
+   *
+   * @param cat - The category string the user selected.
+   */
   pickCategory(cat: string): void {
     this.chosenCategory = cat;
     this.pollForm.get('category')?.setValue(cat);
     this.categoryOpen = false;
   }
 
-  /** Accessor for the questions FormArray. */
+  /**
+   * Accessor for the questions FormArray.
+   *
+   * @returns The {@link FormArray} containing all question groups.
+   */
   get pollQuestions(): FormArray<FormGroup> {
     return this.pollForm.get('questions') as FormArray<FormGroup>;
   }
 
-  /** Returns the answers FormArray for a given question group. */
+  /**
+   * Returns the answers FormArray for a given question group.
+   *
+   * @param q - The question {@link FormGroup} to read answers from.
+   * @returns The nested {@link FormArray} of answer option groups.
+   */
   getOptions(q: FormGroup): FormArray<FormGroup> {
     return q.get('answers') as FormArray<FormGroup>;
   }
@@ -121,6 +138,8 @@ export class NewPollComponent {
   /**
    * Removes the question at {@link index} when more than one question exists.
    * Clears the question text when only one question remains.
+   *
+   * @param index - Zero-based index of the question to remove or clear.
    */
   deleteQuestion(index: number): void {
     if (this.pollQuestions.length > 1) {
@@ -130,7 +149,11 @@ export class NewPollComponent {
     }
   }
 
-  /** Appends a new answer option to the question at {@link questionIndex}. */
+  /**
+   * Appends a new answer option to the question at {@link questionIndex}.
+   *
+   * @param questionIndex - Zero-based index of the question to add an answer to.
+   */
   appendOption(questionIndex: number): void {
     pushOptionToQuestion(this.fb, this.pollQuestions.at(questionIndex));
   }
@@ -138,6 +161,9 @@ export class NewPollComponent {
   /**
    * Removes the answer at {@link answerIndex} when more than two options exist.
    * Clears the answer text when only two options remain.
+   *
+   * @param questionIndex - Zero-based index of the question that owns the answer.
+   * @param answerIndex - Zero-based index of the answer option to remove or clear.
    */
   deleteOption(questionIndex: number, answerIndex: number): void {
     const q = this.pollQuestions.at(questionIndex);
@@ -149,13 +175,22 @@ export class NewPollComponent {
     }
   }
 
-  /** Clears a named form field; also resets {@link chosenCategory} when clearing the category. */
+  /**
+   * Clears a named form field; also resets {@link chosenCategory} when clearing the category.
+   *
+   * @param fieldName - The form control name to clear (e.g. `'name'`, `'category'`).
+   */
   clearField(fieldName: string): void {
     this.pollForm.get(fieldName)?.setValue('');
     if (fieldName === 'category') this.chosenCategory = null;
   }
 
-  /** Converts a zero-based answer index to its uppercase letter label (0 → 'A'). */
+  /**
+   * Converts a zero-based answer index to its uppercase letter label (0 → `'A'`).
+   *
+   * @param index - Zero-based position of the answer option.
+   * @returns The corresponding uppercase letter string.
+   */
   indexToLetter(index: number): string {
     return numToAlpha(index);
   }
@@ -172,7 +207,11 @@ export class NewPollComponent {
     }
   }
 
-  /** Returns false and shows a notification when the form is not ready to submit. */
+  /**
+   * Returns false and shows a notification when the form is not ready to submit.
+   *
+   * @returns `true` when the form is valid and ready to submit, `false` otherwise.
+   */
   private validateForm(): boolean {
     if (this.pollQuestions.length === 0) {
       this.displayNotification('Please add at least one question');
@@ -192,7 +231,11 @@ export class NewPollComponent {
     setTimeout(() => this.router.navigate(['/']), 2200);
   }
 
-  /** Shows a toast notification with {@link message} and hides it after 2 seconds. */
+  /**
+   * Shows a toast notification with {@link message} and hides it after 2 seconds.
+   *
+   * @param message - The text to display inside the toast.
+   */
   displayNotification(message: string): void {
     this.notificationText = message;
     this.notificationVisible = true;
