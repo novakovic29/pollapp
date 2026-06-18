@@ -60,10 +60,10 @@
 
             <div class="nav-right">
               <div class="sort-row">
-                <button class="sort-btn" (click)="toggleSortMenu()">Sort by categories</button>
                 @if (selectedCategory) {
-                  <span class="active-category">{{ selectedCategory }} <button class="clear-filter" (click)="filterByCategory('All Categories')">✕</button></span>
+                  <span class="active-category" (click)="filterByCategory('All Categories')">{{ selectedCategory }}</span>
                 }
+                <button class="sort-btn" (click)="toggleSortMenu()">Sort by categories</button>
               </div>
               @if (sortMenuOpen) {
                 <div class="sort-menu">
