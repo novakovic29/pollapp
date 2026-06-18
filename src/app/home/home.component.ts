@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PollService } from '../core/services/poll.service';
@@ -65,6 +65,13 @@ export class HomeComponent implements OnInit {
 
   toggleSortMenu(): void {
     this.sortMenuOpen = !this.sortMenuOpen;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (this.sortMenuOpen && !(event.target as HTMLElement).closest('.nav-right')) {
+      this.sortMenuOpen = false;
+    }
   }
 
   filterByCategory(cat: string): void {

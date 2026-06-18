@@ -129,7 +129,7 @@ $text-muted:   #ccc;
     display: block;
     user-select: none;
     border-radius: 8px;
-    transition: opacity 0.25s ease;
+    transition: opacity 0.6s ease-in-out;
   }
 
   .visual-hover {
