@@ -97,6 +97,8 @@ export class NewPollComponent {
   deleteQuestion(index: number): void {
     if (this.pollQuestions.length > 1) {
       this.pollQuestions.removeAt(index);
+    } else {
+      this.pollQuestions.at(0).get('text')?.setValue('');
     }
   }
 

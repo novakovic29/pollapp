@@ -149,7 +149,7 @@
                   <div class="question-card" [formGroup]="q">
                     <div class="question-card-header">
                       <h2>{{ i + 1 }}. Question</h2>
-                      <button class="remove-btn" (click)="deleteQuestion(i)" [disabled]="pollQuestions.length === 1" [style.opacity]="pollQuestions.length === 1 ? '0.3' : '1'">
+                      <button class="remove-btn" (click)="deleteQuestion(i)">
                         <img src="assets/images/delete.svg" class="delete-icon" alt="" />
                         <img src="assets/images/delete_hover.svg" class="delete-icon-hover" alt="" />
                       </button>
@@ -252,7 +252,7 @@
                   <div class="question-card" [formGroup]="q">
                     <div class="question-card-header">
                       <h2>{{ i + 1 }}. Question</h2>
-                      <button class="remove-btn" (click)="deleteQuestion(i)" [disabled]="pollQuestions.length === 1" [style.opacity]="pollQuestions.length === 1 ? '0.3' : '1'">
+                      <button class="remove-btn" (click)="deleteQuestion(i)">
                         <img src="assets/images/delete.svg" class="delete-icon" alt="" />
                         <img src="assets/images/delete_hover.svg" class="delete-icon-hover" alt="" />
                       </button>

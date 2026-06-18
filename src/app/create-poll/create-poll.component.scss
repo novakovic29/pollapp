@@ -748,14 +748,21 @@
 }
 
 @media (max-width: 480px) {
+  .field-group {
+    position: relative;
+
+    label {
+      display: block;
+      padding-right: 36px;
+    }
+  }
+
   .field-input-row {
     flex-direction: column;
-    position: relative;
 
     input,
     textarea {
       width: 100%;
-      margin-top: 30px;
     }
 
     .remove-btn {
