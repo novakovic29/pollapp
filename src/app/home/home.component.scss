@@ -420,3 +420,31 @@ $text-muted:   #ccc;
   .surveys-main-title { font-size: 36px; }
   .soon-label { font-size: 22px; }
 }
+
+@media (max-width: 570px) {
+  .surveys-main-title { font-size: 26px; }
+  .soon-label { font-size: 17px; }
+
+  .nav-btn { font-size: 13px; padding: 6px 14px; }
+  .sort-btn { font-size: 13px; padding: 6px 14px; }
+  .sort-opt { font-size: 14px; }
+
+  .poll-card {
+    padding: 20px;
+
+    .poll-name { font-size: 16px; }
+    .poll-category { font-size: 13px; }
+    .poll-desc { font-size: 13px; }
+    .poll-deadline { font-size: 12px; }
+  }
+
+  .soon-card {
+    padding: 30px;
+    flex: 0 0 220px;
+    min-height: 220px;
+
+    .item-name { font-size: 16px; }
+    .item-category { font-size: 12px; }
+    .item-deadline { font-size: 12px; }
+  }
+}

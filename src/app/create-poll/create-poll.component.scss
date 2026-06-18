@@ -720,6 +720,45 @@
   }
 }
 
+@media (max-width: 440px) {
+  .poll-page-content {
+    padding: 0;
+  }
+
+  .poll-creator-container {
+    padding: 16px;
+  }
+
+  .poll-main-body {
+    padding: 16px;
+  }
+
+  .field-input-row {
+    flex-direction: column;
+    position: relative;
+
+    input,
+    textarea {
+      width: 100%;
+      margin-top: 30px;
+    }
+
+    .remove-btn {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+  }
+
+  .question-card {
+    margin-top: 16px;
+  }
+
+  .option-row input {
+    margin-top: 20px;
+  }
+}
+
 @media (max-width: 335px) {
   .validation-msg {
     height: auto;
